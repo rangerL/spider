@@ -15,7 +15,7 @@ for item in iterms:
 '''
 class qsbk:
     def __init__(self):
-        self.pageIndex = 2
+        self.pageIndex = 1
         self.user_agent = 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:54.0) Gecko/20100101 Firefox/54.0'
         # 初始化headers
         self.headers = {'User-Agent': self.user_agent}
@@ -27,7 +27,7 @@ class qsbk:
         if pageindex==1:
             url='https://www.qiushibaike.com'
         else:
-            url='https://www.qiushibaike.com/8hr/page/'+str(pageindex)+'?s=5001810'
+            url='https://www.qiushibaike.com/8hr/page/'+str(pageindex)+'?s=5002023'
         content = requests.get(url, headers=self.headers).text
         return content
     def getpageiterms(self,pageindex):
