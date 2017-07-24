@@ -55,8 +55,8 @@ class BDTB:
         content = r.text
         return content
 
-    def getTitle(self):
-        page = self.getPage(1)
+    def getTitle(self,page):
+        #page = self.getPage(pagenum)
         pattern = re.compile('<h3 class="core_title_txt.*?>(.*?)</h3>', re.S)
         result = re.search(pattern, page)
         if result:
@@ -65,8 +65,8 @@ class BDTB:
         else:
             return None
     #获取帖子一共有多少页
-    def getPageNum(self):
-        page = self.getPage(1)
+    def getPageNum(self,page):
+        #page = self.getPage(pagenum)
         pattern = re.compile('<li class="l_reply_num.*?</span>.*?>(.*?)</span>',re.S)
         result = re.search(pattern,page)
         if result:
@@ -100,13 +100,14 @@ class BDTB:
                 #楼之间的分隔符
                 floorLine = "\n" + str(self.floor) + u"-----------------------------------------------------------------------------------------\n"
                 self.file.write(floorLine)
-            self.file.write(item)
+            self.file.write(item.decode('utf-8'))
             self.floor += 1
     def start(self):
         indexPage = self.getPage(1)
         pageNum = self.getPageNum(indexPage)
         title = self.getTitle(indexPage)
         self.setFileTitle(title)
+        print(title)
         if pageNum == None:
             print("URL已失效，请重试")
             return
@@ -119,13 +120,14 @@ class BDTB:
                 self.writeData(contents)
         #出现写入异常
         except IOError as e:
-            print("写入异常，原因" + e.message)
+            print("写入异常，原因" + e.strerror)
         finally:
+            self.file.close()
             print("写入任务完成")
-baseURL = 'http://tieba.baidu.com/p/3138733512'
-bdtb = BDTB(baseURL,1)
-bdtb.getPage(1)
-print(bdtb.getTitle())
-print(bdtb.getPageNum())
-bdtb.getContent(bdtb.getPage(1))
+print(u"请输入帖子代号,http://tieba.baidu.com/p/...")
+baseURL = 'http://tieba.baidu.com/p/' + str(input())
+seeLZ = input("是否只获取楼主发言，是输入1，否输入0\n")
+floorTag = input("是否写入楼层信息，是输入1，否输入0\n")
+bdtb = BDTB(baseURL,seeLZ,floorTag)
+bdtb.start()
 
